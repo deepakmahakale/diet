@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="site.webmanifest">
+    <title>Recipe Detail</title>
+
+    <!-- Icons -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+        <div class="header-title">Recipe Details</div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+        </div>
+        <nav>
+            <ul class="sidebar-nav">
+                <li><a href="index.html">Schedule</a></li>
+                <li><a href="recipes.html" class="active">Recipes</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Overlay (for closing sidebar) -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="container">
+            <a href="recipes.html" class="back-btn">← Back to Recipes</a>
+
+            <div class="recipe-detail" id="recipeDetail">
+                <!-- Recipe content will be dynamically inserted here -->
+            </div>
+
+            <!-- Install Button -->
+            <button id="installBtn" style="display: none;">Install App</button>
+        </div>
+    </div>
+
+    <!-- Shared App Functionality -->
+    <script src="app.js"></script>
+    <!-- Recipe Data -->
+    <script src="recipes.js"></script>
+
+    <!-- Page-specific JavaScript -->
+    <script>
+        /**
+         * Recipe Detail Page Logic
+         */
+
+        const recipeDetail = document.getElementById('recipeDetail');
+
+        /**
+         * Render recipe details
+         */
+        function renderRecipeDetail() {
+            // Get recipe ID from sessionStorage
+            const recipeId = sessionStorage.getItem('currentRecipeId');
+
+            if (!recipeId) {
+                recipeDetail.innerHTML = `
+                    <p style="text-align: center; color: #999;">
+                        No recipe selected. <a href="recipes.html" style="color: #4CAF50;">Go back to recipes</a>
+                    </p>
+                `;
+                return;
+            }
+
+            // Get recipe data
+            const recipe = getRecipeById(recipeId);
+
+            if (!recipe) {
+                recipeDetail.innerHTML = `
+                    <p style="text-align: center; color: #999;">
+                        Recipe not found. <a href="recipes.html" style="color: #4CAF50;">Go back to recipes</a>
+                    </p>
+                `;
+                return;
+            }
+
+            // Render recipe
+            recipeDetail.innerHTML = `
+                <div>
+                    <span class="recipe-category category-${recipe.category}">
+                        ${recipe.category.charAt(0).toUpperCase() + recipe.category.slice(1)}
+                    </span>
+                    <h1>${recipe.name}</h1>
+                </div>
+
+                <div class="ingredients">
+                    <h2>🥗 Ingredients</h2>
+                    <ul>
+                        ${recipe.ingredients.map(ingredient => `
+                            <li>${ingredient}</li>
+                        `).join('')}
+                    </ul>
+                </div>
+
+                <div class="instructions">
+                    <h2>👩‍🍳 Instructions</h2>
+                    <ol>
+                        ${recipe.instructions.map(instruction => `
+                            <li>${instruction}</li>
+                        `).join('')}
+                    </ol>
+                </div>
+            `;
+        }
+
+        // Render recipe on page load
+        renderRecipeDetail();
+    </script>
+</body>
+
+</html>

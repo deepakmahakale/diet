@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="site.webmanifest">
+    <title>Diet Schedule</title>
+
+    <!-- Icons -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Page-specific Styles -->
+    <style>
+        .patient-info {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .patient-info h2 {
+            margin: 0 0 15px 0;
+            font-size: 24px;
+        }
+
+        .patient-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .patient-info strong {
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+        <div class="header-title">Diet Schedule</div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+        </div>
+        <nav>
+            <ul class="sidebar-nav">
+                <li><a href="index.html" class="active">Schedule</a></li>
+                <li><a href="recipes.html">Recipes</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Overlay (for closing sidebar) -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="container">
+            <!-- Early Morning -->
+            <div class="meal-section">
+                <h2>🌅 Early Morning (7:00 AM - 7:30 AM)</h2>
+
+                <div class="meal-option">
+                    <h3>Option 1: Flaxseeds Water</h3>
+                    <p>Mix 1 tsp roasted flax seeds powder in 1 glass water (200ml). Have water in morning without straining.</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 2: Cinnamon Water</h3>
+                    <p>Soak 1 inch cinnamon stick in water (200ml) overnight and drink next morning. OR Take 1 tsp cinnamon powder in 1 glass water, strain and drink.</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 3: Garlic Lime Water</h3>
+                    <p>1-2 garlic cloves + lime water in 1 glass (150ml)</p>
+                </div>
+            </div>
+
+            <!-- Snacks 1 -->
+            <div class="meal-section">
+                <h2>🌰 Snacks 1 (7:30 AM - 8:00 AM)</h2>
+                <div class="meal-option">
+                    <p>Soaked almonds - 4-5 + Walnut - 2</p>
+                </div>
+            </div>
+
+            <!-- Breakfast -->
+            <div class="meal-section">
+                <h2>🍳 Breakfast (8:00 AM - 9:00 AM)</h2>
+
+                <div class="meal-option">
+                    <h3>Option 1: Ragi Idli</h3>
+                    <p>2-3 pieces + Mint Chutney (no coconut, peanut) 2-3 tsp + Sambhar 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 2: Boiled Protein</h3>
+                    <p>Boiled Moong/Chana/Sprouts/Egg whites - 1 katori + Chopped vegetables 4-5 tbsp</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 3: Avocado Smoothie</h3>
+                    <p>1/2 avocado + 100ml unsweetened almond milk + 1 handful spinach + 1 tbsp roasted flaxseeds. Blend all together.</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 4: Multigrain Sandwich</h3>
+                    <p>2 slices bread + vegetables (plenty) + 2 boiled egg whites</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 5: Quinoa Upma</h3>
+                    <p>Quinoa upma with veggies - 1 katori + Curd 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 6: Oats Besan Chilla</h3>
+                    <p>2 chillas (CD size) + 2 tsp mint coriander chutney + Curd 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 7: Paneer Vegetable Wrap</h3>
+                    <p>1 wrap (Jowar or Nachni chilla/ghavan with mint coriander chutney, sautéed paneer and veggies)</p>
+                </div>
+            </div>
+
+            <!-- Mid Morning -->
+            <div class="meal-section">
+                <h2>🥤 Mid Morning (11:00 AM - 11:30 AM)</h2>
+
+                <div class="meal-option">
+                    <h3>Option 1: Fruit + Seeds</h3>
+                    <p>1 fruit + Roasted sunflower seeds 1 tbsp + Roasted pumpkin seeds 1 tbsp</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 2: Buttermilk + Seeds</h3>
+                    <p>Buttermilk 1 glass (200ml) + Roasted sunflower seeds 1 tbsp + Roasted pumpkin seeds 1 tbsp</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 3: Green Tea + Seeds</h3>
+                    <p>Green tea 1 cup + Roasted sunflower seeds 1 tbsp + Roasted pumpkin seeds 1 tbsp</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 4: Lemon Chia Water</h3>
+                    <p>Lemon water with chia seeds - 1 glass (200ml)</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 5: Amla Water</h3>
+                    <p>30ml amla juice mixed with water (50ml total) OR grind 2 medium sized amla with 1/2 glass water. Add pinch of cumin or black pepper powder. Do not add salt.</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 6: Green Juice</h3>
+                    <p>Spinach, cucumber, mint, amla, ginger blended together - 1 glass (150ml)</p>
+                </div>
+            </div>
+
+            <!-- Lunch -->
+            <div class="meal-section">
+                <h2>🍽️ Lunch (1:00 PM - 2:00 PM)</h2>
+
+                <div class="meal-option">
+                    <h3>Option 1: Bajra Roti + Paneer Bhurji</h3>
+                    <p>Bajra roti 2 (CD size, thin, no oil/ghee) + Paneer bhurji 1 katori + Salad 1 katori + Chutney (flaxseed, sesame, fenugreek seeds, garlic) 1 tsp + Chickpea salad with cucumber, tomatoes, onion, lemon-olive oil dressing 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 2: Brown Rice Bowl</h3>
+                    <p>Brown rice + sautéed tofu + steamed beans and carrots - 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 3: Whole Wheat Wrap</h3>
+                    <p>Whole wheat wrap with hummus, grilled veggies, and avocado - 1</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 4: Quinoa Salad</h3>
+                    <p>Quinoa salad with black beans, corn, bell peppers, and lime dressing - 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 5: Jowar Roti + Soya Curry</h3>
+                    <p>Jowar roti 2 (CD size, thin, no oil/ghee) + Lauki sabji 1 katori + Soya curry (no coconut/peanuts/cream) 1 katori + Salad 1 katori + Chutney 1 tsp</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 6: Multigrain Roti Combo</h3>
+                    <p>Multigrain roti 2 (CD size) + Matki sabji 1 katori + Chutney 2 tsp + Cucumber raita 1 katori</p>
+                </div>
+            </div>
+
+            <!-- Evening Tea -->
+            <div class="meal-section">
+                <h2>☕ Evening Tea (4:00 PM - 5:00 PM)</h2>
+
+                <div class="meal-option">
+                    <h3>Option 1: Green Tea + Roasted Chana</h3>
+                    <p>Green tea 1 cup (toned milk, without sugar) + Roasted chana 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 2: Makhana</h3>
+                    <p>Makhana - 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 3: Kurmura Bhel</h3>
+                    <p>Kurmura/Bhel (no sev, peanuts) - 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 4: Poha Chivda</h3>
+                    <p>Poha chivda - 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 5: Khakra</h3>
+                    <p>Khakra - 1-2 pieces</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 6: Puffed Jowar</h3>
+                    <p>Puffed jowar - 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 7: Moong Sprouts Salad</h3>
+                    <p>Boiled moong sprouted salad - 1 katori</p>
+                </div>
+            </div>
+
+            <!-- Dinner -->
+            <div class="meal-section">
+                <h2>🌙 Dinner (8:00 PM - 9:00 PM)</h2>
+
+                <div class="meal-option">
+                    <h3>Option 1: Chicken + Vegetable Pulao</h3>
+                    <p>Salad 1 katori + Chutney 1 tbsp + Vegetable pulao 1 katori + Tandoori/Grilled/Roasted chicken 2-3 pcs</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 2: Chapathi + Dal + Sabji</h3>
+                    <p>Salad 1 katori + Chutney 1 tbsp + Chapathi 2 (medium) + Pumpkin sabji 1 katori + Dal 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 3: Daliya Paneer Pulav</h3>
+                    <p>Salad 1 katori + Chutney 1 tbsp + Daliya paneer pulav 1 katori + Sautéed vegetables 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 4: Thalipeeth + Soup</h3>
+                    <p>Thalipeeth 2 (CD size, thin) + Mix vegetable soup 1 katori + Green chutney 2 tsp</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 5: Nachni Dosa</h3>
+                    <p>Nachni dosa 2 (CD size, thin) + Sambar 1 katori + Tomato mint chutney 2 tsp + Salad 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 6: Dal Vegetable Paratha</h3>
+                    <p>Dal vegetable paratha 1 (CD size, thin, no oil/ghee) + Vegetable soup 1 katori + Salad 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 7: Daliya Khichdi</h3>
+                    <p>Daliya vegetable khichdi 1 katori + Salad/Vegetable soup 1 katori</p>
+                </div>
+                <div class="or-divider">OR</div>
+
+                <div class="meal-option">
+                    <h3>Option 8: Oats Dal Khichdi</h3>
+                    <p>Sautéed mushrooms 1/2 katori + Vegetable oats dal khichdi 1 katori + Salad 1 katori</p>
+                </div>
+            </div>
+
+            <!-- Snacks 2 -->
+            <div class="meal-section">
+                <h2>🥛 Snacks 2 (9:15 PM - 9:30 PM)</h2>
+                <div class="meal-option">
+                    <p>Turmeric milk (lukewarm) with a pinch of black pepper - 200ml</p>
+                </div>
+            </div>
+
+            <!-- Dietary Guidelines -->
+            <div class="guidelines">
+                <h2>📋 General Guidelines</h2>
+                <ul>
+                    <li>Include small meals at regular intervals and follow meal timings</li>
+                    <li>Keep a 3-4 hour gap between each meal</li>
+                    <li>Avoid skipping and overeating at one time</li>
+                    <li>Follow the portion size of your meals as mentioned</li>
+                    <li>Keep your calories intact</li>
+                    <li>Avoid heavy and late meals at dinner time</li>
+                    <li>Include variety in the diet by including seasonal fruits and vegetables</li>
+                    <li>Avoid fruits along with meals - eat fruit as a separate meal</li>
+                    <li>Focus on food and chew slowly, ensuring good digestion</li>
+                    <li>Adopt healthier cooking practices: grilling, steaming, sautéing, broiling, roasting</li>
+                    <li>Avoid screens while having food</li>
+                    <li>Follow fluid and salt restrictions as per cardiologist's recommendation</li>
+                </ul>
+
+                <h3 style="margin-top: 20px;">Measurements Reference:</h3>
+                <p><strong>Small katori:</strong> 150g | <strong>Medium katori:</strong> 200g | <strong>Big katori/Bowl:</strong> 350g</p>
+                <p><strong>1 tsp:</strong> 5g/ml | <strong>1 tbsp:</strong> 15g/ml</p>
+                <p><strong>1 Small cup:</strong> 150ml | <strong>1 Medium cup:</strong> 200ml | <strong>1 Large cup:</strong> 250ml | <strong>1 Glass:</strong> 250ml</p>
+            </div>
+
+            <!-- Install Button -->
+            <button id="installBtn" style="display: none;">Install App</button>
+        </div>
+    </div>
+
+    <!-- Shared App Functionality -->
+    <script src="app.js"></script>
+</body>
+
+</html>

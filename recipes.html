@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="site.webmanifest">
+    <title>Recipes</title>
+
+    <!-- Icons -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+        <div class="header-title">Recipes</div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+        </div>
+        <nav>
+            <ul class="sidebar-nav">
+                <li><a href="index.html">Schedule</a></li>
+                <li><a href="recipes.html" class="active">Recipes</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Overlay (for closing sidebar) -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="container">
+            <h1 style="margin-bottom: 20px; color: #333;">Recipe Collection</h1>
+
+            <!-- Category Filter -->
+            <div class="category-filter">
+                <button class="filter-btn active" data-category="all">All Recipes</button>
+                <button class="filter-btn" data-category="salad">Salads</button>
+                <button class="filter-btn" data-category="soup">Soups</button>
+                <button class="filter-btn" data-category="raita">Raitas</button>
+            </div>
+
+            <!-- Recipe Grid -->
+            <div class="recipe-grid" id="recipeGrid">
+                <!-- Recipes will be dynamically inserted here -->
+            </div>
+
+            <!-- Install Button -->
+            <button id="installBtn" style="display: none;">Install App</button>
+        </div>
+    </div>
+
+    <!-- Shared App Functionality -->
+    <script src="app.js"></script>
+    <!-- Recipe Data -->
+    <script src="recipes.js"></script>
+
+    <!-- Page-specific JavaScript -->
+    <script>
+        /**
+         * Recipe Index Page Logic
+         */
+
+        let currentCategory = 'all';
+
+        // DOM Elements
+        const recipeGrid = document.getElementById('recipeGrid');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        /**
+         * Render recipes to the grid
+         */
+        function renderRecipes(category = 'all') {
+            const recipes = getRecipesByCategory(category);
+
+            if (recipes.length === 0) {
+                recipeGrid.innerHTML = '<p style="text-align: center; color: #999;">No recipes found in this category.</p>';
+                return;
+            }
+
+            recipeGrid.innerHTML = recipes.map(recipe => `
+                <div class="recipe-card" onclick="openRecipe('${recipe.id}')">
+                    <span class="recipe-category category-${recipe.category}">${recipe.category.charAt(0).toUpperCase() + recipe.category.slice(1)}</span>
+                    <h3>${recipe.name}</h3>
+                    <p style="color: #999; font-size: 14px; margin-top: 8px;">
+                        ${recipe.ingredients.length} ingredients
+                    </p>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * Open recipe detail page
+         */
+        function openRecipe(recipeId) {
+            // Store recipe ID in sessionStorage
+            sessionStorage.setItem('currentRecipeId', recipeId);
+            // Navigate to recipe detail page
+            window.location.href = 'recipe-detail.html';
+        }
+
+        /**
+         * Handle category filter clicks
+         */
+        function handleFilterClick(event) {
+            const button = event.target;
+            const category = button.dataset.category;
+
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Update current category and render
+            currentCategory = category;
+            renderRecipes(category);
+        }
+
+        // Attach event listeners to filter buttons
+        filterButtons.forEach(button => {
+            button.addEventListener('click', handleFilterClick);
+        });
+
+        // Initial render
+        renderRecipes('all');
+    </script>
+</body>
+
+</html>
