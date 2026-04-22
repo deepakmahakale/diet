@@ -32,9 +32,11 @@ const RECIPES = [
         ingredients: [
             'Corn',
             'Beans',
-            'Onion, tomatoes',
+            'Onion',
+            'Tomatoes',
             'Green chilli',
-            'Carrot, capsicum',
+            'Carrot',
+            'Capsicum',
             'Coriander leaves, mint leaves',
             '1 tsp olive oil',
             'Lemon juice',
@@ -47,6 +49,26 @@ const RECIPES = [
             'Add black pepper, lemon juice as per taste, and add olive oil for better taste.',
             'Garnish with coriander leaves and mint.',
             'Serve chilled.'
+        ]
+    },
+    {
+        id: 'zucchini-bell-pepper-sprouts-salad',
+        name: 'Zucchini, Bell Pepper and Sprouts Salad',
+        category: 'salad',
+        ingredients: [
+            'Cup finely chopped zucchini (unpeeled)',
+            'Cup finely chopped red capsicum',
+            'Cup finely chopped yellow capsicum',
+            'Cup finely chopped green capsicum',
+            'Cups parboiled sprouted moong (whole green gram)',
+            'Cup chopped apple (unpeeled and deseeded)',
+            'Tbsp olive oil',
+            'Lemon juice',
+            'Salt and to taste'
+        ],
+        instructions: [
+            'Combine all the ingredients in a deep bowl and toss well.',
+            'Serve immediately.'
         ]
     },
     {
@@ -70,6 +92,47 @@ const RECIPES = [
             'Add olive oil, vinegar, lemon juice, and red pepper flakes.',
             'Mix well all the ingredients.',
             'Serve it.'
+        ]
+    },
+    {
+        id: 'rajma-vegetable-healthy-salad',
+        name: 'Rajma Vegetable Healthy Salad',
+        category: 'salad',
+        ingredients: [
+            'Soaked and cooked rajma (kidney beans)',
+            'Coloured capsicum cubes',
+            'Baby spinach, torn into pieces',
+            'Carrot juliennes',
+            'Chopped spring onions',
+            'Tomatoes, cut into halves',
+            'To Be Mixed Into A Dressing',
+            '1 tbsp extra virgin olive oil',
+            '1/4 tsp dry red chilli flakes (paprika)',
+            '1/4 tsp dried oregano',
+            'Salt to taste'
+        ],
+        instructions: [
+            'It can be taken to work in a lunch box with a dressing in a separate small container.',
+            'Just before eating, mix the dressing and toss well.',
+            'Eat immediately.'
+        ]
+    },
+    {
+        id: 'carrot-apple-salad',
+        name: 'Carrot and Apple Salad',
+        category: 'salad',
+        ingredients: [
+            '2 tablespoons honey',
+            '2 tablespoons oil or olive oil',
+            '2 tablespoons fresh lemon juice',
+            '100g green apple, cored and thinly sliced',
+            '100g carrots, peeled and cut into coins',
+            '100g walnut pieces, toasted',
+        ],
+        instructions: [
+            'In large bowl, whisk honey, oil and lemon juice; season.',
+            'Toss apple and carrots with dressing.',
+            'Sprinkle with nuts'
         ]
     },
     {
@@ -138,6 +201,26 @@ const RECIPES = [
             'Combine rajma, spring onions, paneer and coriander in a deep bowl.',
             'Add the salsa and toss well.',
             'Serve immediately.'
+        ]
+    },
+    {
+        id: 'tomato-red-capsicum-cucumber-salad',
+        name: 'Tomato, Red Capsicum and Cucumber Salad',
+        category: 'salad',
+        ingredients: [
+            '100g Cucumbers',
+            '100g tomatoes',
+            '100g red capsicum',
+            'fresh flat-leaf parsley',
+            '2 cloves of garlic',
+            'salt to taste',
+            '1 tsp oil',
+            'juice of 1 lemon',
+        ],
+        instructions: [
+            'Dice the vegetables and finely chop the parsley and garlic before transferring them to a large bowl.',
+            'Dress the salad with salt, oil and lemon juice just before serving.',
+            'Combine together, mix properly.'
         ]
     },
 
