@@ -200,6 +200,7 @@ body {
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-left: 4px solid #4CAF50;
+    position: relative;
 }
 
 .recipe-card:hover {
@@ -207,11 +208,56 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
+.recipe-card.favorited {
+    border-left: 4px solid #FF6B6B;
+}
+
+.recipe-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
 .recipe-card h3 {
-    margin: 0 0 10px 0;
+    margin: 0;
     color: #333;
     font-size: 18px;
     font-weight: 500;
+    flex: 1;
+    padding-right: 10px;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 0;
+    line-height: 1;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2);
+}
+
+.favorite-btn.favorited {
+    color: #FF6B6B;
+}
+
+.favorite-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #FF6B6B;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
 .recipe-category {
@@ -237,6 +283,54 @@ body {
     background-color: #2196F3;
 }
 
+/* No Results Message */
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.no-results h3 {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* Search Match Highlighting */
+.search-match {
+    background-color: #FFEB3B;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+/* Search Bar */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 14px 20px;
+    padding-left: 45px;
+    font-size: 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 25px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 15px center;
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.search-bar::placeholder {
+    color: #999;
+}
+
 /* Category Filter */
 .category-filter {
     display: flex;
@@ -260,6 +354,17 @@ body {
 .filter-btn:hover,
 .filter-btn.active {
     background-color: #4CAF50;
+    color: white;
+}
+
+.filter-btn.favorites {
+    border-color: #FF6B6B;
+    color: #FF6B6B;
+}
+
+.filter-btn.favorites:hover,
+.filter-btn.favorites.active {
+    background-color: #FF6B6B;
     color: white;
 }
 

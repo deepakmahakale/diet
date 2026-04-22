@@ -44,9 +44,21 @@
         <div class="container">
             <h1 style="margin-bottom: 20px; color: #333;">Recipe Collection</h1>
 
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input
+                    type="text"
+                    class="search-bar"
+                    id="searchBar"
+                    placeholder="Search recipes by name or ingredients (e.g., 'carrot', 'cucumber')..."
+                    aria-label="Search recipes"
+                >
+            </div>
+
             <!-- Category Filter -->
             <div class="category-filter">
                 <button class="filter-btn active" data-category="all">All Recipes</button>
+                <button class="filter-btn favorites" data-category="favorites">❤️ Favorites</button>
                 <button class="filter-btn" data-category="salad">Salads</button>
                 <button class="filter-btn" data-category="soup">Soups</button>
                 <button class="filter-btn" data-category="raita">Raitas</button>
@@ -70,46 +82,210 @@
     <!-- Page-specific JavaScript -->
     <script>
         /**
-         * Recipe Index Page Logic
+         * Recipe Index Page Logic with Search and Favorites
          */
 
         let currentCategory = 'all';
+        let currentSearchQuery = '';
 
         // DOM Elements
         const recipeGrid = document.getElementById('recipeGrid');
+        const searchBar = document.getElementById('searchBar');
         const filterButtons = document.querySelectorAll('.filter-btn');
+
+        // ============================================================================
+        // Favorites Management
+        // ============================================================================
+
+        /**
+         * Get favorites from localStorage
+         */
+        function getFavorites() {
+            const favorites = localStorage.getItem('favoriteRecipes');
+            return favorites ? JSON.parse(favorites) : [];
+        }
+
+        /**
+         * Save favorites to localStorage
+         */
+        function saveFavorites(favorites) {
+            localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
+        }
+
+        /**
+         * Toggle favorite status
+         */
+        function toggleFavorite(recipeId, event) {
+            event.stopPropagation(); // Prevent opening recipe
+
+            const favorites = getFavorites();
+            const index = favorites.indexOf(recipeId);
+
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                favorites.push(recipeId);
+            }
+
+            saveFavorites(favorites);
+            renderRecipes(currentCategory, currentSearchQuery);
+        }
+
+        /**
+         * Check if recipe is favorited
+         */
+        function isFavorited(recipeId) {
+            return getFavorites().includes(recipeId);
+        }
+
+        // ============================================================================
+        // Search Functionality
+        // ============================================================================
+
+        /**
+         * Search recipes with smart ranking
+         * Priority: Title match > Ingredient match
+         */
+        function searchRecipes(query) {
+            if (!query || query.trim() === '') {
+                return RECIPES;
+            }
+
+            const searchTerm = query.toLowerCase().trim();
+            const results = [];
+
+            RECIPES.forEach(recipe => {
+                let score = 0;
+                let matchType = '';
+
+                // Check title match (highest priority)
+                if (recipe.name.toLowerCase().includes(searchTerm)) {
+                    score = 100;
+                    matchType = 'title';
+                }
+                // Check ingredient match (lower priority)
+                else {
+                    const ingredientMatch = recipe.ingredients.some(ingredient =>
+                        ingredient.toLowerCase().includes(searchTerm)
+                    );
+                    if (ingredientMatch) {
+                        score = 50;
+                        matchType = 'ingredient';
+                    }
+                }
+
+                if (score > 0) {
+                    results.push({ ...recipe, searchScore: score, matchType });
+                }
+            });
+
+            // Sort by score (descending)
+            return results.sort((a, b) => b.searchScore - a.searchScore);
+        }
+
+        /**
+         * Filter recipes by category and favorites
+         */
+        function filterRecipesByCategory(recipes, category) {
+            if (category === 'all') {
+                return recipes;
+            } else if (category === 'favorites') {
+                const favorites = getFavorites();
+                return recipes.filter(recipe => favorites.includes(recipe.id));
+            } else {
+                return recipes.filter(recipe => recipe.category === category);
+            }
+        }
+
+        /**
+         * Sort recipes - favorites first
+         */
+        function sortRecipes(recipes) {
+            const favorites = getFavorites();
+            return recipes.sort((a, b) => {
+                const aFav = favorites.includes(a.id);
+                const bFav = favorites.includes(b.id);
+
+                if (aFav && !bFav) return -1;
+                if (!aFav && bFav) return 1;
+                return 0;
+            });
+        }
+
+        // ============================================================================
+        // Rendering
+        // ============================================================================
 
         /**
          * Render recipes to the grid
          */
-        function renderRecipes(category = 'all') {
-            const recipes = getRecipesByCategory(category);
+        function renderRecipes(category = 'all', searchQuery = '') {
+            // Search first
+            let recipes = searchQuery ? searchRecipes(searchQuery) : [...RECIPES];
+
+            // Then filter by category
+            recipes = filterRecipesByCategory(recipes, category);
+
+            // Sort with favorites first ONLY when NOT searching
+            // When searching, use search score ranking only
+            if (!searchQuery) {
+                recipes = sortRecipes(recipes);
+            }
 
             if (recipes.length === 0) {
-                recipeGrid.innerHTML = '<p style="text-align: center; color: #999;">No recipes found in this category.</p>';
+                const message = searchQuery
+                    ? `No recipes found for "${searchQuery}"`
+                    : category === 'favorites'
+                        ? 'No favorite recipes yet. Click the ❤️ on any recipe to add it to favorites!'
+                        : 'No recipes found in this category.';
+
+                recipeGrid.innerHTML = `
+                    <div class="no-results">
+                        <h3>😕 ${message}</h3>
+                        ${searchQuery ? '<p>Try searching with different keywords</p>' : ''}
+                    </div>
+                `;
                 return;
             }
 
-            recipeGrid.innerHTML = recipes.map(recipe => `
-                <div class="recipe-card" onclick="openRecipe('${recipe.id}')">
-                    <span class="recipe-category category-${recipe.category}">${recipe.category.charAt(0).toUpperCase() + recipe.category.slice(1)}</span>
-                    <h3>${recipe.name}</h3>
-                    <p style="color: #999; font-size: 14px; margin-top: 8px;">
-                        ${recipe.ingredients.length} ingredients
-                    </p>
-                </div>
-            `).join('');
+            recipeGrid.innerHTML = recipes.map(recipe => {
+                const favorited = isFavorited(recipe.id);
+                return `
+                    <div class="recipe-card ${favorited ? 'favorited' : ''}" onclick="openRecipe('${recipe.id}')">
+                        ${favorited ? '<span class="favorite-badge">Favorite</span>' : ''}
+                        <div class="recipe-card-header">
+                            <div>
+                                <span class="recipe-category category-${recipe.category}">${recipe.category.charAt(0).toUpperCase() + recipe.category.slice(1)}</span>
+                                <h3>${recipe.name}</h3>
+                            </div>
+                            <button
+                                class="favorite-btn ${favorited ? 'favorited' : ''}"
+                                onclick="toggleFavorite('${recipe.id}', event)"
+                                aria-label="${favorited ? 'Remove from favorites' : 'Add to favorites'}"
+                            >
+                                ${favorited ? '❤️' : '🤍'}
+                            </button>
+                        </div>
+                        <p style="color: #999; font-size: 14px; margin-top: 8px;">
+                            ${recipe.ingredients.length} ingredients
+                            ${recipe.matchType ? ` • Match: ${recipe.matchType}` : ''}
+                        </p>
+                    </div>
+                `;
+            }).join('');
         }
 
         /**
          * Open recipe detail page
          */
         function openRecipe(recipeId) {
-            // Store recipe ID in sessionStorage
             sessionStorage.setItem('currentRecipeId', recipeId);
-            // Navigate to recipe detail page
             window.location.href = 'recipe-detail.html';
         }
+
+        // ============================================================================
+        // Event Handlers
+        // ============================================================================
 
         /**
          * Handle category filter clicks
@@ -124,13 +300,27 @@
 
             // Update current category and render
             currentCategory = category;
-            renderRecipes(category);
+            renderRecipes(category, currentSearchQuery);
         }
 
-        // Attach event listeners to filter buttons
+        /**
+         * Handle search input
+         */
+        function handleSearch(event) {
+            currentSearchQuery = event.target.value;
+            renderRecipes(currentCategory, currentSearchQuery);
+        }
+
+        // ============================================================================
+        // Initialization
+        // ============================================================================
+
+        // Attach event listeners
         filterButtons.forEach(button => {
             button.addEventListener('click', handleFilterClick);
         });
+
+        searchBar.addEventListener('input', handleSearch);
 
         // Initial render
         renderRecipes('all');

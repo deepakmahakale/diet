@@ -61,10 +61,57 @@
     <!-- Page-specific JavaScript -->
     <script>
         /**
-         * Recipe Detail Page Logic
+         * Recipe Detail Page Logic with Favorites
          */
 
         const recipeDetail = document.getElementById('recipeDetail');
+
+        // ============================================================================
+        // Favorites Management
+        // ============================================================================
+
+        /**
+         * Get favorites from localStorage
+         */
+        function getFavorites() {
+            const favorites = localStorage.getItem('favoriteRecipes');
+            return favorites ? JSON.parse(favorites) : [];
+        }
+
+        /**
+         * Save favorites to localStorage
+         */
+        function saveFavorites(favorites) {
+            localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
+        }
+
+        /**
+         * Toggle favorite status
+         */
+        function toggleFavorite(recipeId) {
+            const favorites = getFavorites();
+            const index = favorites.indexOf(recipeId);
+
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                favorites.push(recipeId);
+            }
+
+            saveFavorites(favorites);
+            renderRecipeDetail(); // Re-render to update button
+        }
+
+        /**
+         * Check if recipe is favorited
+         */
+        function isFavorited(recipeId) {
+            return getFavorites().includes(recipeId);
+        }
+
+        // ============================================================================
+        // Rendering
+        // ============================================================================
 
         /**
          * Render recipe details
@@ -94,13 +141,36 @@
                 return;
             }
 
+            const favorited = isFavorited(recipeId);
+
             // Render recipe
             recipeDetail.innerHTML = `
-                <div>
-                    <span class="recipe-category category-${recipe.category}">
-                        ${recipe.category.charAt(0).toUpperCase() + recipe.category.slice(1)}
-                    </span>
-                    <h1>${recipe.name}</h1>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                    <div>
+                        <span class="recipe-category category-${recipe.category}">
+                            ${recipe.category.charAt(0).toUpperCase() + recipe.category.slice(1)}
+                        </span>
+                        <h1 style="margin-top: 10px;">${recipe.name}</h1>
+                    </div>
+                    <button
+                        onclick="toggleFavorite('${recipeId}')"
+                        style="
+                            background: none;
+                            border: 2px solid ${favorited ? '#FF6B6B' : '#ddd'};
+                            border-radius: 50%;
+                            width: 60px;
+                            height: 60px;
+                            font-size: 28px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            flex-shrink: 0;
+                        "
+                        aria-label="${favorited ? 'Remove from favorites' : 'Add to favorites'}"
+                        onmouseover="this.style.transform='scale(1.1)'"
+                        onmouseout="this.style.transform='scale(1)'"
+                    >
+                        ${favorited ? '❤️' : '🤍'}
+                    </button>
                 </div>
 
                 <div class="ingredients">
