@@ -7,7 +7,7 @@
 // Configuration
 // ============================================================================
 
-const CACHE_NAME = 'diet-app-cache-v2';
+const CACHE_NAME = 'diet-app-cache-v3';
 
 // Files to cache for offline functionality
 const ASSETS_TO_CACHE = [
@@ -28,13 +28,23 @@ const ASSETS_TO_CACHE = [
 
     // Shared resources
     'styles.css',
+    './styles.css',
+    '/styles.css',
     'app.js',
+    './app.js',
+    '/app.js',
     'recipes.js',
+    './recipes.js',
+    '/recipes.js',
     'settings.html',
     './settings.html',
     '/settings.html',
     'settings.js',
+    './settings.js',
+    '/settings.js',
     'notifications.js',
+    './notifications.js',
+    '/notifications.js',
 
     // Manifest and Icons
     'site.webmanifest',
