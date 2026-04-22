@@ -310,16 +310,19 @@ body {
 
 .search-bar {
     width: 100%;
-    padding: 14px 20px;
-    padding-left: 45px;
+    padding: 12px 15px;
+    padding-left: 40px;
     font-size: 16px;
     border: 2px solid #e9ecef;
     border-radius: 25px;
     box-sizing: border-box;
     transition: border-color 0.3s ease;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: 15px center;
+    background-position: 12px center;
+    background-size: 18px 18px;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .search-bar:focus {
@@ -329,6 +332,7 @@ body {
 
 .search-bar::placeholder {
     color: #999;
+    font-size: 15px;
 }
 
 /* Category Filter */
@@ -482,4 +486,164 @@ body {
     .meal-section {
         padding: 15px;
     }
+
+    .search-bar {
+        padding: 10px 12px;
+        padding-left: 38px;
+        font-size: 15px;
+    }
+
+    .search-bar::placeholder {
+        font-size: 14px;
+    }
+
+    .category-filter {
+        gap: 8px;
+    }
+
+    .filter-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+}
+
+/* ============================================================================
+   Settings Page Styles
+   ============================================================================ */
+
+.settings-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    border-left: 4px solid #4CAF50;
+}
+
+.settings-section h2 {
+    margin: 0 0 20px 0;
+    color: #4CAF50;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.setting-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.setting-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Toggle Switch (iOS Style) */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 28px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* Status Messages */
+.status-message {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.status-message.granted {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-message.denied {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status-message.default {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+
+.status-message.hidden {
+    display: none;
+}
+
+/* Secondary Button */
+.secondary-btn {
+    padding: 10px 20px;
+    background-color: #fff;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.secondary-btn:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.secondary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

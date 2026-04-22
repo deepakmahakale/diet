@@ -7,7 +7,7 @@
 // Configuration
 // ============================================================================
 
-const CACHE_NAME = 'diet-app-cache-v1';
+const CACHE_NAME = 'diet-app-cache-v2';
 
 // Files to cache for offline functionality
 const ASSETS_TO_CACHE = [
@@ -30,6 +30,11 @@ const ASSETS_TO_CACHE = [
     'styles.css',
     'app.js',
     'recipes.js',
+    'settings.html',
+    './settings.html',
+    '/settings.html',
+    'settings.js',
+    'notifications.js',
 
     // Manifest and Icons
     'site.webmanifest',
@@ -162,4 +167,41 @@ self.addEventListener('message', (event) => {
         console.log('[ServiceWorker] Received SKIP_WAITING message');
         self.skipWaiting();
     }
+});
+
+// ============================================================================
+// Notification Click Handling
+// ============================================================================
+
+/**
+ * Handle notification clicks
+ * Opens the app when user clicks a notification
+ */
+self.addEventListener('notificationclick', (event) => {
+    console.log('[ServiceWorker] Notification clicked:', event.notification.tag);
+
+    event.notification.close();
+
+    // Get the URL to open (from notification data or default to index)
+    const urlToOpen = event.notification.data?.url || '/index.html';
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then((clientList) => {
+                // Check if app is already open
+                for (const client of clientList) {
+                    if (client.url.includes(urlToOpen) && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+
+                // If not open, open new window
+                if (clients.openWindow) {
+                    return clients.openWindow(urlToOpen);
+                }
+            })
+            .catch((error) => {
+                console.error('[ServiceWorker] Error handling notification click:', error);
+            })
+    );
 });
