@@ -65,9 +65,20 @@
                 <div id="permissionStatus" class="status-message hidden"></div>
 
                 <!-- Notification Preview/Test -->
-                <button id="testNotification" class="secondary-btn">
-                    Send Test Notification
-                </button>
+                <div class="test-notification-section">
+                    <h3 style="margin-bottom: 10px;">Test Notification</h3>
+                    <div class="test-notification-controls">
+                        <div class="time-input-group">
+                            <label for="testNotificationTime">Schedule for:</label>
+                            <input type="time" id="testNotificationTime" class="time-input">
+                            <button id="setCurrentTime" class="small-btn" title="Set to current time">Now</button>
+                        </div>
+                        <button id="testNotification" class="secondary-btn">
+                            Schedule Test Notification
+                        </button>
+                    </div>
+                    <div id="testNotificationInfo" class="test-info hidden"></div>
+                </div>
 
                 <!-- Individual Meal Controls -->
                 <div id="mealTogglesContainer" class="meal-toggles-container hidden">

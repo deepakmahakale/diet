@@ -9,6 +9,12 @@ const permissionStatus = document.getElementById('permissionStatus');
 const testNotificationBtn = document.getElementById('testNotification');
 const mealTogglesContainer = document.getElementById('mealTogglesContainer');
 const mealToggles = document.getElementById('mealToggles');
+const testNotificationTime = document.getElementById('testNotificationTime');
+const setCurrentTimeBtn = document.getElementById('setCurrentTime');
+const testNotificationInfo = document.getElementById('testNotificationInfo');
+
+// Test notification timeout ID
+let testNotificationTimeoutId = null;
 
 // ============================================================================
 // UI Updates
@@ -162,14 +168,108 @@ async function handleToggleChange(event) {
 }
 
 /**
+ * Set time input to current time
+ */
+function setCurrentTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    testNotificationTime.value = `${hours}:${minutes}`;
+}
+
+/**
+ * Calculate milliseconds until specified time
+ */
+function getMillisecondsUntilTime(timeString) {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const now = new Date();
+    const target = new Date();
+    target.setHours(hours, minutes, 0, 0);
+
+    // If time has passed today, schedule for tomorrow
+    if (target <= now) {
+        target.setDate(target.getDate() + 1);
+    }
+
+    return target.getTime() - now.getTime();
+}
+
+/**
+ * Format milliseconds to human-readable time
+ */
+function formatTimeUntil(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+        return `${hours}h ${minutes}m`;
+    } else if (minutes > 0) {
+        return `${minutes}m ${seconds}s`;
+    } else {
+        return `${seconds}s`;
+    }
+}
+
+/**
  * Handle test notification button
  */
 function handleTestNotification() {
-    if (NotificationManager.getPermissionStatus() === 'granted') {
-        NotificationManager.showTest();
-    } else {
+    if (NotificationManager.getPermissionStatus() !== 'granted') {
         alert('Please enable notifications first');
+        return;
     }
+
+    const timeValue = testNotificationTime.value;
+
+    if (!timeValue) {
+        // No time specified - send immediately
+        NotificationManager.showTest();
+        testNotificationInfo.textContent = '✓ Test notification sent immediately!';
+        testNotificationInfo.classList.remove('hidden', 'scheduled');
+        testNotificationInfo.classList.add('test-info');
+
+        // Hide message after 3 seconds
+        setTimeout(() => {
+            testNotificationInfo.classList.add('hidden');
+        }, 3000);
+        return;
+    }
+
+    // Clear any existing scheduled test
+    if (testNotificationTimeoutId) {
+        clearTimeout(testNotificationTimeoutId);
+        testNotificationTimeoutId = null;
+    }
+
+    // Calculate delay
+    const delay = getMillisecondsUntilTime(timeValue);
+    const targetTime = new Date(Date.now() + delay);
+    const timeUntil = formatTimeUntil(delay);
+
+    // Schedule the test notification
+    testNotificationTimeoutId = setTimeout(() => {
+        console.log('[Settings] Triggering scheduled test notification');
+        NotificationManager.showTest();
+        testNotificationTimeoutId = null;
+
+        // Update info message
+        testNotificationInfo.textContent = '✓ Test notification sent!';
+        testNotificationInfo.classList.remove('scheduled');
+
+        // Hide after 5 seconds
+        setTimeout(() => {
+            testNotificationInfo.classList.add('hidden');
+        }, 5000);
+    }, delay);
+
+    // Show scheduling confirmation
+    testNotificationInfo.textContent = `⏰ Test notification scheduled for ${targetTime.toLocaleTimeString()} (in ${timeUntil})`;
+    testNotificationInfo.classList.remove('hidden');
+    testNotificationInfo.classList.add('scheduled');
+
+    console.log(`[Settings] Test notification scheduled for ${targetTime.toLocaleString()} (${delay}ms)`);
 }
 
 /**
@@ -204,9 +304,16 @@ function initSettings() {
     // Set initial UI state
     refreshUI();
 
+    // Set default time to 1 minute from now
+    const defaultTime = new Date(Date.now() + 60000); // 1 minute from now
+    const hours = String(defaultTime.getHours()).padStart(2, '0');
+    const minutes = String(defaultTime.getMinutes()).padStart(2, '0');
+    testNotificationTime.value = `${hours}:${minutes}`;
+
     // Attach event listeners
     notificationsToggle.addEventListener('change', handleToggleChange);
     testNotificationBtn.addEventListener('click', handleTestNotification);
+    setCurrentTimeBtn.addEventListener('click', setCurrentTime);
 
     console.log('[Settings] Page initialized');
 }
