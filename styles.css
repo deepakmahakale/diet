@@ -647,3 +647,66 @@ input:checked + .slider:before {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* Meal Toggles Container */
+.meal-toggles-container {
+    margin-top: 20px;
+}
+
+.meal-toggles-container.hidden {
+    display: none;
+}
+
+.meal-toggles-container h3 {
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.meal-toggle-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.meal-toggle-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.meal-toggle-item.disabled {
+    opacity: 0.6;
+}
+
+.meal-toggle-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.meal-emoji {
+    font-size: 24px;
+}
+
+.meal-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.meal-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+}
+
+.meal-time {
+    font-size: 13px;
+    color: #666;
+    margin: 2px 0 0 0;
+}

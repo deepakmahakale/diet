@@ -7,6 +7,8 @@
 const notificationsToggle = document.getElementById('notificationsToggle');
 const permissionStatus = document.getElementById('permissionStatus');
 const testNotificationBtn = document.getElementById('testNotification');
+const mealTogglesContainer = document.getElementById('mealTogglesContainer');
+const mealToggles = document.getElementById('mealToggles');
 
 // ============================================================================
 // UI Updates
@@ -56,11 +58,68 @@ function updateToggleState() {
 }
 
 /**
+ * Create individual meal toggle items
+ */
+function createMealToggles() {
+    const meals = NotificationManager.getMealSchedule();
+    const mealSettings = NotificationManager.getMealSettings();
+
+    // Clear existing toggles
+    mealToggles.innerHTML = '';
+
+    meals.forEach(meal => {
+        const isEnabled = mealSettings[meal.id] !== false;
+
+        const toggleItem = document.createElement('div');
+        toggleItem.className = `meal-toggle-item ${!isEnabled ? 'disabled' : ''}`;
+        toggleItem.dataset.mealId = meal.id;
+
+        toggleItem.innerHTML = `
+            <div class="meal-toggle-info">
+                <span class="meal-emoji">${meal.emoji}</span>
+                <div class="meal-details">
+                    <div class="meal-name">${meal.title}</div>
+                    <div class="meal-time">${meal.timeRange}</div>
+                </div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" data-meal-id="${meal.id}" ${isEnabled ? 'checked' : ''}>
+                <span class="slider"></span>
+            </label>
+        `;
+
+        mealToggles.appendChild(toggleItem);
+    });
+
+    // Attach event listeners to all meal toggles
+    const toggleInputs = mealToggles.querySelectorAll('input[type="checkbox"]');
+    toggleInputs.forEach(input => {
+        input.addEventListener('change', handleMealToggleChange);
+    });
+}
+
+/**
+ * Update meal toggles visibility and state
+ */
+function updateMealTogglesVisibility() {
+    const notificationsEnabled = NotificationManager.areEnabled();
+    const permissionGranted = NotificationManager.getPermissionStatus() === 'granted';
+
+    if (notificationsEnabled && permissionGranted) {
+        mealTogglesContainer.classList.remove('hidden');
+        createMealToggles(); // Refresh the toggles
+    } else {
+        mealTogglesContainer.classList.add('hidden');
+    }
+}
+
+/**
  * Update entire UI
  */
 function refreshUI() {
     updateToggleState();
     updatePermissionStatus();
+    updateMealTogglesVisibility();
 }
 
 // ============================================================================
@@ -97,6 +156,9 @@ async function handleToggleChange(event) {
 
     // Update UI
     refreshUI();
+
+    // Show/hide individual meal toggles
+    updateMealTogglesVisibility();
 }
 
 /**
@@ -107,6 +169,27 @@ function handleTestNotification() {
         NotificationManager.showTest();
     } else {
         alert('Please enable notifications first');
+    }
+}
+
+/**
+ * Handle individual meal toggle change
+ */
+function handleMealToggleChange(event) {
+    const mealId = event.target.dataset.mealId;
+    const enabled = event.target.checked;
+
+    console.log(`[Settings] Meal toggle changed: ${mealId} = ${enabled}`);
+
+    // Update the meal setting
+    NotificationManager.setMealEnabled(mealId, enabled);
+
+    // Update the visual state of the toggle item
+    const toggleItem = event.target.closest('.meal-toggle-item');
+    if (enabled) {
+        toggleItem.classList.remove('disabled');
+    } else {
+        toggleItem.classList.add('disabled');
     }
 }
 

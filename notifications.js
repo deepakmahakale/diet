@@ -67,6 +67,8 @@ const MEAL_SCHEDULE = [
 ];
 
 const STORAGE_KEY = 'dietAppNotificationsEnabled';
+const MEAL_SETTINGS_KEY = 'dietAppMealSettings';
+const LAST_CHECK_KEY = 'dietAppLastNotificationCheck';
 const NOTIFICATION_TAG_PREFIX = 'meal-notification-';
 
 // ============================================================================
@@ -74,7 +76,7 @@ const NOTIFICATION_TAG_PREFIX = 'meal-notification-';
 // ============================================================================
 
 /**
- * Check if notifications are enabled in settings
+ * Check if notifications are enabled globally
  */
 function areNotificationsEnabled() {
     const setting = localStorage.getItem(STORAGE_KEY);
@@ -82,11 +84,66 @@ function areNotificationsEnabled() {
 }
 
 /**
- * Save notification preference
+ * Save global notification preference
  */
 function setNotificationsEnabled(enabled) {
     localStorage.setItem(STORAGE_KEY, enabled.toString());
     console.log('[Notifications] Settings updated:', enabled);
+}
+
+/**
+ * Get individual meal settings
+ * @returns {Object} Object with meal IDs as keys and boolean enabled status
+ */
+function getMealSettings() {
+    const settings = localStorage.getItem(MEAL_SETTINGS_KEY);
+    if (!settings) {
+        // Default: all meals enabled
+        const defaultSettings = {};
+        MEAL_SCHEDULE.forEach(meal => {
+            defaultSettings[meal.id] = true;
+        });
+        return defaultSettings;
+    }
+    return JSON.parse(settings);
+}
+
+/**
+ * Save individual meal settings
+ * @param {Object} settings - Object with meal IDs as keys and boolean values
+ */
+function saveMealSettings(settings) {
+    localStorage.setItem(MEAL_SETTINGS_KEY, JSON.stringify(settings));
+    console.log('[Notifications] Meal settings updated:', settings);
+}
+
+/**
+ * Check if a specific meal notification is enabled
+ * @param {string} mealId - The meal ID to check
+ * @returns {boolean}
+ */
+function isMealEnabled(mealId) {
+    if (!areNotificationsEnabled()) {
+        return false; // Global toggle is off
+    }
+    const settings = getMealSettings();
+    return settings[mealId] !== false; // Default to true if not set
+}
+
+/**
+ * Toggle a specific meal notification
+ * @param {string} mealId - The meal ID to toggle
+ * @param {boolean} enabled - Whether to enable or disable
+ */
+function setMealEnabled(mealId, enabled) {
+    const settings = getMealSettings();
+    settings[mealId] = enabled;
+    saveMealSettings(settings);
+
+    // Reschedule notifications
+    if (areNotificationsEnabled() && getPermissionStatus() === 'granted') {
+        scheduleAllNotifications();
+    }
 }
 
 /**
@@ -241,11 +298,22 @@ function getMillisecondsUntilTime(timeString) {
  * @param {Object} meal - Meal configuration
  */
 function scheduleMealNotification(meal) {
+    // Check if this specific meal is enabled
+    if (!isMealEnabled(meal.id)) {
+        console.log(`[Notifications] Skipping disabled meal: ${meal.title}`);
+        return;
+    }
+
     const delay = getMillisecondsUntilTime(meal.time);
 
     const timeoutId = setTimeout(() => {
         console.log('[Notifications] Triggering:', meal.title);
-        showMealNotification(meal);
+
+        // Double-check if still enabled before showing
+        if (isMealEnabled(meal.id)) {
+            showMealNotification(meal);
+            recordNotificationShown(meal.id);
+        }
 
         // Reschedule for next day
         scheduleMealNotification(meal);
@@ -296,24 +364,102 @@ function clearAllSchedules() {
 }
 
 /**
+ * Record that a notification was shown
+ * @param {string} mealId - The meal ID
+ */
+function recordNotificationShown(mealId) {
+    const today = new Date().toDateString();
+    const key = `notification-shown-${mealId}-${today}`;
+    localStorage.setItem(key, 'true');
+}
+
+/**
+ * Check if a notification was already shown today
+ * @param {string} mealId - The meal ID
+ * @returns {boolean}
+ */
+function wasNotificationShownToday(mealId) {
+    const today = new Date().toDateString();
+    const key = `notification-shown-${mealId}-${today}`;
+    return localStorage.getItem(key) === 'true';
+}
+
+/**
+ * Check for missed notifications and show them
+ */
+function checkMissedNotifications() {
+    if (!areNotificationsEnabled() || getPermissionStatus() !== 'granted') {
+        return;
+    }
+
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+
+    console.log('[Notifications] Checking for missed notifications...');
+
+    MEAL_SCHEDULE.forEach(meal => {
+        // Skip if this meal is disabled
+        if (!isMealEnabled(meal.id)) {
+            return;
+        }
+
+        // Skip if already shown today
+        if (wasNotificationShownToday(meal.id)) {
+            return;
+        }
+
+        // Parse meal time
+        const [hours, minutes] = meal.time.split(':').map(Number);
+        const mealTime = hours * 60 + minutes;
+
+        // If we've passed this meal time and haven't shown it, show it now
+        if (currentTime >= mealTime) {
+            console.log(`[Notifications] Showing missed notification: ${meal.title}`);
+            showMealNotification(meal);
+            recordNotificationShown(meal.id);
+        }
+    });
+
+    // Update last check time
+    localStorage.setItem(LAST_CHECK_KEY, now.toISOString());
+}
+
+/**
  * Reschedule notifications (call this on page load)
  */
 function initializeNotifications() {
     console.log('[Notifications] Initializing...');
+
+    // Check for missed notifications first
+    checkMissedNotifications();
 
     // Only schedule if enabled and permitted
     if (areNotificationsEnabled() && getPermissionStatus() === 'granted') {
         scheduleAllNotifications();
     }
 
-    // Re-schedule daily to handle missed notifications
-    // Check every hour if any schedules need updating
+    // Re-check for missed notifications when page becomes visible
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            console.log('[Notifications] Page visible - checking for missed notifications');
+            checkMissedNotifications();
+
+            // Reschedule to ensure timers are active
+            if (areNotificationsEnabled() && getPermissionStatus() === 'granted') {
+                scheduleAllNotifications();
+            }
+        }
+    });
+
+    // Re-schedule periodically to handle missed notifications
+    // Check every 30 minutes if any schedules need updating
     setInterval(() => {
         if (areNotificationsEnabled() && getPermissionStatus() === 'granted') {
-            console.log('[Notifications] Hourly check - ensuring schedules active');
+            console.log('[Notifications] Periodic check - ensuring schedules active');
+            checkMissedNotifications();
             scheduleAllNotifications();
         }
-    }, 60 * 60 * 1000); // Every hour
+    }, 30 * 60 * 1000); // Every 30 minutes
 }
 
 // ============================================================================
@@ -326,6 +472,12 @@ const NotificationManager = {
     setEnabled: setNotificationsEnabled,
     getPermissionStatus,
 
+    // Meal-specific settings
+    getMealSettings,
+    saveMealSettings,
+    isMealEnabled,
+    setMealEnabled,
+
     // Permissions
     requestPermission: requestNotificationPermission,
 
@@ -336,6 +488,7 @@ const NotificationManager = {
     scheduleAll: scheduleAllNotifications,
     clearAll: clearAllSchedules,
     initialize: initializeNotifications,
+    checkMissed: checkMissedNotifications,
 
     // Configuration
     getMealSchedule: () => MEAL_SCHEDULE
